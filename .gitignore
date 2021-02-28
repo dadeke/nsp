@@ -1,0 +1,12 @@
+# Dirs
+.vscode/
+build/
+coverage/
+dist/
+node_modules/
+temp/
+
+# Files
+.env
+ormconfig.json
+yarn-error.log
