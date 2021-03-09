@@ -1,14 +1,28 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
 
 import createConnection from './database';
 import router from './routes';
+import AppError from './errors/AppError';
 
 const connection = createConnection();
-const app = express();
+export { connection };
 
+const app = express();
 app.use(express.json());
 app.use(router);
 
-export { connection };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
+  if (err instanceof AppError) {
+    return response.status(err.statusCode).json({ message: err.message });
+  }
+
+  return response.status(500).json({
+    status: 'Error',
+    message: `Internal server error ${err.message}`,
+  });
+});
+
 export default app;
